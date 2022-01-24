@@ -1,22 +1,36 @@
 package mokele.mbembe.common.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LightningEntity;
+import mokele.mbembe.common.init.MbembeSoundEvents;
+import mokele.mbembe.common.init.MbembeStatusEffects;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.*;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.mob.Angerable;
+import net.minecraft.entity.mob.DrownedEntity;
+import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.TimeHelper;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -27,7 +41,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAnimatable, IAnimationTickable {
@@ -42,24 +56,65 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     public MokeleMbembeEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         this.stepHeight = 2.0F;
+        this.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
     }
 
     @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(0, new MoveIntoWaterGoal(this));
         this.goalSelector.add(2, new MeleeAttackGoal(this, 1.0, false));
         this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0, 0.0F));
         this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(8, new LookAroundGoal(this));
-        this.targetSelector.add(2, new RevengeGoal(this, new Class[0]));
+        this.targetSelector.add(2, new RevengeGoal(this));
         this.targetSelector.add(3, new ActiveTargetGoal(this, DrownedEntity.class, true, false));
         this.targetSelector.add(4, new UniversalAngerGoal(this, false));
+    }
+
+    @Override
+    protected ActionResult interactMob(PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.getItem().equals(Items.HEART_OF_THE_SEA) && !this.isAngry()) {
+            player.addStatusEffect(new StatusEffectInstance(MbembeStatusEffects.MOKELES_BLESSING, 24000, 0, false, false), this);
+            if(!player.getAbilities().creativeMode) {
+                stack.decrement(1);
+            }
+            this.emitGameEvent(GameEvent.MOB_INTERACT, this.getCameraBlockPos());
+            return ActionResult.SUCCESS;
+        }
+        return super.interactMob(player, hand);
+    }
+
+    @Override
+    protected void updatePostDeath() {
+        ++this.deathTime;
+        if (this.deathTime == 52 && !this.world.isClient()) {
+            this.world.sendEntityStatus(this, (byte)60);
+            this.remove(RemovalReason.KILLED);
+        }
     }
 
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(ANGRY, false);
         this.dataTracker.startTracking(PROVOKED, false);
+    }
+
+    @Override
+    public boolean canSpawn(WorldAccess world, SpawnReason spawnReason) {
+        return true;
+    }
+
+    public void setTarget(@Nullable LivingEntity target) {
+        super.setTarget(target);
+        if (target == null) {
+            this.dataTracker.set(ANGRY, false);
+            this.dataTracker.set(PROVOKED, false);
+        } else {
+            this.dataTracker.set(ANGRY, true);
+        }
+
     }
 
 
@@ -123,6 +178,17 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     }
 
     @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return MbembeSoundEvents.ENTITY_MOKELE_HURT;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return MbembeSoundEvents.ENTITY_MOKELE_AMBIENT;
+    }
+
+    @Override
     public void setAngerTime(int ticks) {
         this.angerTime = ticks;
     }
@@ -140,7 +206,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
 
     @Override
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<MokeleMbembeEntity>(this, "controller", 10, this::predicate));
+        animationData.addAnimationController(new AnimationController<>(this, "controller", 10, this::predicate));
     }
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         if(!isAlive()){
@@ -166,5 +232,9 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     @Override
     public int tickTimer() {
         return age;
+    }
+
+    public static boolean canSpawn(EntityType<MokeleMbembeEntity> mokeleMbembeEntityEntityType, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos blockPos, Random random) {
+    return true;
     }
 }

@@ -1,4 +1,7 @@
 {
   "item.mbembe.mokele_spawn_egg": "Mokele Mbembe Spawn Egg",
-  "entity.mbembe.mokele": "Mokele Mbembe"
+  "entity.mbembe.mokele": "Mokele Mbembe",
+  "effect.mbembe.mokeles_blessing": "Mokele's Blessing",
+  "mbembe.subtitles.entity.mokele.idle": "Mokele Mbembe hums majestically",
+  "mbembe.subtitles.entity.mokele.hurt": "Mokele Mbembe grunts in a dignified manner"
 }

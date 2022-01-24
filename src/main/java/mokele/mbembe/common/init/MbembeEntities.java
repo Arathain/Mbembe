@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 public class MbembeEntities {
     private static final Map<EntityType<?>, Identifier> ENTITY_TYPES = new LinkedHashMap<>();
 
-    public static final EntityType<MokeleMbembeEntity> MOKELE_MBEMBE = createEntity("mokele", MokeleMbembeEntity.createMbembeAttributes(), FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, MokeleMbembeEntity::new).dimensions(EntityDimensions.fixed(2.0F, 4.0F)).spawnGroup(SpawnGroup.CREATURE).build());
+    public static final EntityType<MokeleMbembeEntity> MOKELE_MBEMBE = createEntity("mokele", MokeleMbembeEntity.createMbembeAttributes(), FabricEntityTypeBuilder.create(SpawnGroup.WATER_CREATURE, MokeleMbembeEntity::new).dimensions(EntityDimensions.fixed(2.0F, 4.0F)).spawnGroup(SpawnGroup.WATER_CREATURE).build());
 
     private static <T extends LivingEntity> EntityType<T> createEntity(String name, DefaultAttributeContainer.Builder attributes, EntityType<T> type) {
         FabricDefaultAttributeRegistry.register(type, attributes);

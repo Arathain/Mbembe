@@ -4,6 +4,8 @@
   "package": "mokele.mbembe.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "FishingBobberEntityMixin",
+    "PlayerEntityMixin"
   ],
   "client": [
   ],

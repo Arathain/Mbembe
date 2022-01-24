@@ -1,13 +1,13 @@
 {
-  "entity.nudifae.ambient": {
+  "entity.mokele.ambient": {
     "sounds": [
-      "mbembe:mob/mokele_mbembe/ambient"
+      "mbembe:mob/mokele/ambient"
     ],
     "subtitle": "mbembe.subtitles.entity.mokele.idle"
   },
-  "entity.nudifae.hurt": {
+  "entity.mokele.hurt": {
     "sounds": [
-      "mbembe:mob/mokele_mbembe/hurt"
+      "mbembe:mob/mokele/hurt"
     ],
     "subtitle": "mbembe.subtitles.entity.mokele.hurt"
   }
