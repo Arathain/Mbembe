@@ -148,10 +148,12 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
 
     @Override
     public boolean tryAttack(Entity target) {
-        LightningEntity entity = new LightningEntity(EntityType.LIGHTNING_BOLT, this.world);
-        entity.setPosition(target.getPos());
-        entity.setCosmetic(false);
-        world.spawnEntity(entity);
+        if(this.hasCustomName() && this.getCustomName().getString().equalsIgnoreCase("lowtiergod")) {
+            LightningEntity entity = new LightningEntity(EntityType.LIGHTNING_BOLT, this.world);
+            entity.setPosition(target.getPos());
+            entity.setCosmetic(false);
+            world.spawnEntity(entity);
+        }
         return super.tryAttack(target);
     }
 
@@ -206,7 +208,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
 
     @Override
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 10, this::predicate));
+        animationData.addAnimationController(new AnimationController<>(this, "controller", 20, this::predicate));
     }
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         if(!isAlive()){
@@ -235,6 +237,6 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     }
 
     public static boolean canSpawn(EntityType<MokeleMbembeEntity> mokeleMbembeEntityEntityType, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos blockPos, Random random) {
-    return true;
+        return true;
     }
 }
