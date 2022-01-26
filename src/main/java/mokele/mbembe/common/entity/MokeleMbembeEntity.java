@@ -73,10 +73,16 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     }
 
     @Override
+    public double getSwimHeight() {
+        return 1.8D;
+    }
+
+    @Override
     protected ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
         if (stack.getItem().equals(Items.HEART_OF_THE_SEA) && !this.isAngry()) {
             player.addStatusEffect(new StatusEffectInstance(MbembeStatusEffects.MOKELES_BLESSING, 24000, 0, false, false), this);
+            this.heal(10);
             if(!player.getAbilities().creativeMode) {
                 stack.decrement(1);
             }
@@ -89,7 +95,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
-        if (this.deathTime == 52 && !this.world.isClient()) {
+        if (this.deathTime >= 60 && !this.world.isClient()) {
             this.world.sendEntityStatus(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
@@ -216,9 +222,14 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
                     .addAnimation("animation.mokele.death", true));
             return PlayState.CONTINUE;
         }
-        if(event.isMoving()){
+        if((this.isInsideWaterOrBubbleColumn() || this.touchingWater) && (this.getVelocity().x * this.getVelocity().x + this.getVelocity().z * this.getVelocity().z) > 0f) {
             event.getController().setAnimation(new AnimationBuilder()
-                    .addAnimation("animation.mokele.walk", true));
+                    .addAnimation("animation.mokele.swim", true));
+            return PlayState.CONTINUE;
+        }
+        if(event.isMoving()){
+                event.getController().setAnimation(new AnimationBuilder()
+                        .addAnimation("animation.mokele.walk", true));
             return PlayState.CONTINUE;
         }
         event.getController().setAnimation(new AnimationBuilder()

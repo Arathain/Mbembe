@@ -34,9 +34,10 @@ public class MokeleMbembeModel extends AnimatedTickingGeoModel<MokeleMbembeEntit
         IBone head = this.getAnimationProcessor().getBone("head2");
         IBone neck = this.getAnimationProcessor().getBone("neck");
         neck.setRotationX((float) MathHelper.lerp(body.getRotationX(), (-entity.getPitch() * 0.006), 0.6f));
+        neck.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 360F));
 
         head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
-        head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+        head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F) - neck.getRotationY());
         if (entity.isBaby()) {
             body.setScaleX(0.4f);
             body.setScaleY(0.4f);
