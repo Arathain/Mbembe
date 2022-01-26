@@ -13,6 +13,7 @@ public class MbembeSoundEvents {
 
     public static final SoundEvent ENTITY_MOKELE_AMBIENT = create("entity.mokele.ambient");
     public static final SoundEvent ENTITY_MOKELE_HURT = create("entity.mokele.hurt");
+    public static final SoundEvent ENTITY_MOKELE_NOW = create("entity.mokele.now");
 
     private static SoundEvent create(String name) {
         Identifier id = new Identifier(Mbembe.MOD_ID, name);

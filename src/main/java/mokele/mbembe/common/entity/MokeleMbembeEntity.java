@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -158,6 +159,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
             LightningEntity entity = new LightningEntity(EntityType.LIGHTNING_BOLT, this.world);
             entity.setPosition(target.getPos());
             entity.setCosmetic(false);
+            world.playSoundFromEntity(null, this, MbembeSoundEvents.ENTITY_MOKELE_NOW, SoundCategory.VOICE, 1, 1);
             world.spawnEntity(entity);
         }
         return super.tryAttack(target);

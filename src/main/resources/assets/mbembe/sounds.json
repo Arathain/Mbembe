@@ -10,5 +10,11 @@
       "mbembe:mob/mokele/hurt"
     ],
     "subtitle": "mbembe.subtitles.entity.mokele.hurt"
+  },
+  "entity.mokele.now": {
+    "sounds": [
+      "mbembe:mob/mokele/now"
+    ],
+    "subtitle": "mbembe.subtitles.entity.mokele.now"
   }
 }
