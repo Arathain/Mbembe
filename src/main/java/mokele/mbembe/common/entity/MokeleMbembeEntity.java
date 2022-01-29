@@ -23,6 +23,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TimeHelper;
@@ -250,6 +251,6 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     }
 
     public static boolean canSpawn(EntityType<MokeleMbembeEntity> mokeleMbembeEntityEntityType, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos blockPos, Random random) {
-        return true;
+        return random.nextInt(4) == 1 && serverWorldAccess.getBlockState(blockPos).getFluidState().isIn(FluidTags.WATER);
     }
 }
