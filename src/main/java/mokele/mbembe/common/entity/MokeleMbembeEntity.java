@@ -1,7 +1,9 @@
 package mokele.mbembe.common.entity;
 
+import mokele.mbembe.Mbembe;
 import mokele.mbembe.common.init.MbembeSoundEvents;
 import mokele.mbembe.common.init.MbembeStatusEffects;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -12,10 +14,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.mob.Angerable;
-import net.minecraft.entity.mob.DrownedEntity;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -28,7 +27,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -97,7 +98,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
-        if (this.deathTime >= 60 && !this.world.isClient()) {
+        if (this.deathTime >= 62 && !this.world.isClient()) {
             this.world.sendEntityStatus(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
@@ -250,7 +251,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         return age;
     }
 
-    public static boolean canSpawn(EntityType<MokeleMbembeEntity> mokeleMbembeEntityEntityType, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos blockPos, Random random) {
-        return random.nextInt(4) == 1 && serverWorldAccess.getBlockState(blockPos).getFluidState().isIn(FluidTags.WATER);
+    public static boolean canSpawn(EntityType<? extends MokeleMbembeEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
+        return random.nextDouble() > 0.97 && (world.getFluidState(pos).isIn(FluidTags.WATER) || world.getFluidState(pos.offset(Direction.DOWN)).isIn(FluidTags.WATER) || world.getFluidState(pos.offset(Direction.UP)).isIn(FluidTags.WATER));
     }
 }

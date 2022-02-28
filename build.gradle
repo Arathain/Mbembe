@@ -24,6 +24,10 @@ repositories {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/releases/"
 	}
+	maven {
+		name = "Curse"
+		url = "https://www.cursemaven.com"
+	}
 }
 
 dependencies {
