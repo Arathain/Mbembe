@@ -15,6 +15,11 @@ public class MbembeSoundEvents {
     public static final SoundEvent ENTITY_MOKELE_HURT = create("entity.mokele.hurt");
     public static final SoundEvent ENTITY_MOKELE_NOW = create("entity.mokele.now");
 
+    public static final SoundEvent ENTITY_DODO_AMBIENT = create("entity.dodo.ambient");
+    public static final SoundEvent ENTITY_DODO_HURT = create("entity.dodo.hurt");
+    public static final SoundEvent ENTITY_DODO_DEATH = create("entity.dodo.death");
+    public static final SoundEvent ENTITY_DODO_TRANSFORMS = create("entity.dodo.transform");
+
     private static SoundEvent create(String name) {
         Identifier id = new Identifier(Mbembe.MOD_ID, name);
         SoundEvent soundEvent = new SoundEvent(id);

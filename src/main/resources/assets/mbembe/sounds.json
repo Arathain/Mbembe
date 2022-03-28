@@ -16,5 +16,32 @@
       "mbembe:mob/mokele/now"
     ],
     "subtitle": "mbembe.subtitles.entity.mokele.now"
+  },
+  "entity.dodo.ambient": {
+    "sounds": [
+      "mbembe:mob/dodo/ambient",
+      "mbembe:mob/dodo/ambient2",
+      "mbembe:mob/dodo/ambient3"
+    ],
+    "subtitle": "mbembe.subtitles.entity.dodo.idle"
+  },
+  "entity.dodo.hurt": {
+  "sounds": [
+    "mbembe:mob/dodo/hurt",
+    "mbembe:mob/dodo/hurt2"
+  ],
+  "subtitle": "mbembe.subtitles.entity.dodo.hurt"
+  },
+  "entity.dodo.death": {
+    "sounds": [
+      "mbembe:mob/dodo/death"
+    ],
+    "subtitle": "mbembe.subtitles.entity.dodo.death"
+  },
+  "entity.dodo.transform": {
+    "sounds": [
+      "mbembe:mob/dodo/transform"
+    ],
+    "subtitle": "mbembe.subtitles.entity.dodo.transform"
   }
 }

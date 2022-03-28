@@ -1,0 +1,41 @@
+{
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": {
+      "item": "mbembe:dodo"
+    },
+    "title": {
+      "translate": "advancements.adventure.kill_dodo.title"
+    },
+    "description": {
+      "translate": "advancements.adventure.kill_dodo.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "kill_dodo": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "victims": [
+          [
+            {
+              "condition": "minecraft:entity_properties",
+              "predicate": {
+                "type": "mbembe:dodo"
+              },
+              "entity": "this"
+            }
+          ]
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "kill_dodo"
+    ]
+  ]
+}

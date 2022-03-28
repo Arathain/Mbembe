@@ -1,8 +1,26 @@
 {
   "item.mbembe.mokele_spawn_egg": "Mokele Mbembe Spawn Egg",
+  "item.mbembe.dodo_spawn_egg": "Dodo Spawn Egg",
+  "item.mbembe.dodo": "Dodo",
+  "item.mbembe.cooked_dodo": "Cooked Dodo",
+
+  "advancements.adventure.spyglass_at_dodo.title": "The Dodo Way of Life",
+  "advancements.adventure.spyglass_at_dodo.description": "Look at a dodo through a spyglass",
+  "advancements.adventure.kill_dodo.title": "Doom on You",
+  "advancements.adventure.kill_dodo.description": "Kill a dodo...",
+  "advancements.adventure.breed_dodo.title": "The Last Melon!",
+  "advancements.adventure.breed_dodo.description": "Breed two dodos",
+
   "entity.mbembe.mokele": "Mokele Mbembe",
+  "entity.mbembe.dodo": "Dodo",
+
   "effect.mbembe.mokeles_blessing": "Mokele's Blessing",
+
   "mbembe.subtitles.entity.mokele.idle": "Mokele Mbembe hums majestically",
   "mbembe.subtitles.entity.mokele.hurt": "Mokele Mbembe grunts in a dignified manner",
-  "mbembe.subtitles.entity.mokele.now": "Mokele Mbembe asserts its dominance"
+  "mbembe.subtitles.entity.mokele.now": "Mokele Mbembe asserts its dominance",
+  "mbembe.subtitles.entity.dodo.idle": "Dodo sqwaks",
+  "mbembe.subtitles.entity.dodo.hurt": "Dodo hurts",
+  "mbembe.subtitles.entity.dodo.death": "Dodo dies",
+  "mbembe.subtitles.entity.dodo.transform": "Dodo takes on a new form"
 }

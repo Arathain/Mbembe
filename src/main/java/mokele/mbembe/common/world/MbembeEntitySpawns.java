@@ -10,7 +10,6 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.OverworldBiomeCreator;
 
 public class MbembeEntitySpawns {
     public static void init() {

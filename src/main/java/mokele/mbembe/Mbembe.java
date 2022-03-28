@@ -8,8 +8,6 @@ import mokele.mbembe.common.init.MbembeSoundEvents;
 import mokele.mbembe.common.init.MbembeStatusEffects;
 import mokele.mbembe.common.world.MbembeEntitySpawns;
 import net.fabricmc.api.ModInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Mbembe implements ModInitializer {
 	public static String MOD_ID = "mbembe";

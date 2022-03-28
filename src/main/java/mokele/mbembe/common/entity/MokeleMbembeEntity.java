@@ -1,11 +1,21 @@
 package mokele.mbembe.common.entity;
 
-import mokele.mbembe.Mbembe;
 import mokele.mbembe.common.init.MbembeSoundEvents;
 import mokele.mbembe.common.init.MbembeStatusEffects;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.LookAroundGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.MoveIntoWaterGoal;
+import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.UniversalAngerGoal;
+import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -14,7 +24,10 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.mob.*;
+import net.minecraft.entity.mob.Angerable;
+import net.minecraft.entity.mob.DrownedEntity;
+import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -29,8 +42,6 @@ import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.event.GameEvent;
@@ -104,6 +115,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         }
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(ANGRY, false);
@@ -115,6 +127,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         return true;
     }
 
+    @Override
     public void setTarget(@Nullable LivingEntity target) {
         super.setTarget(target);
         if (target == null) {
@@ -135,7 +148,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 96.0);
     }
-
+    @Override
     public void chooseRandomAngerTime() {
         this.setAngerTime(ANGER_TIME_RANGE.get(this.random));
     }
@@ -151,6 +164,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     public void setProvoked() {
         this.dataTracker.set(PROVOKED, true);
     }
+    @Override
     public boolean cannotDespawn() {
         return true;
     }
