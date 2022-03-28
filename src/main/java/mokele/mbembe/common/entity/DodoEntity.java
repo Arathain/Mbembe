@@ -76,7 +76,7 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
 
         if (itemStack.isOf(Items.GLISTERING_MELON_SLICE) && !this.isGlistering()) {
             itemStack.decrement(1);
-            this.world.playSoundFromEntity(null, this, MbembeSoundEvents.ENTITY_DODO_TRANSFORMS, this.getSoundCategory(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
+            this.world.playSoundFromEntity(null, this, MbembeSoundEvents.ENTITY_DODO_TRANSFORMS, this.getSoundCategory(), 1.0F, 1.0F);
             Vec3d vec3d = this.getBoundingBox().getCenter();
             Random random = this.world.getRandom();
             for (int i = 0; i < 10; ++i) {
