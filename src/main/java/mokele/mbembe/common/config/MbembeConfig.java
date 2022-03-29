@@ -21,12 +21,27 @@ public class MbembeConfig implements Config {
             The largest group size Mokeles can spawn in. Default is 1.
             """)
     public int mbembeMax = 1;
+    @Syncing
+    @Comment("""
+            Dodo spawning weight. Default is 1.
+            """)
+    public int dodoWeight = 1;
+    @Syncing
+    @Comment("""
+            The smallest group size Dodos can spawn in. Default is 1.
+            """)
+    public int dodoMin = 1;
+    @Syncing
+    @Comment("""
+            The largest group size Dodos can spawn in. Default is 4.
+            """)
+    public int dodoMax = 4;
 
 
 
     @Override
     public String getName() {
-        return "hyperion";
+        return "mbembe";
     }
     @Override
     public String getModid() {

@@ -1,14 +1,11 @@
 package mokele.mbembe.common.entity;
 
+import mokele.mbembe.common.entity.goal.TwerkGoal;
 import mokele.mbembe.common.init.MbembeEntities;
 import mokele.mbembe.common.init.MbembeSoundEvents;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.AnimalMateGoal;
-import net.minecraft.entity.ai.goal.EscapeDangerGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -29,8 +26,10 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -43,11 +42,14 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.Random;
 
-public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationTickable {
+public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationTickable, Twerker {
     private static final TrackedData<Boolean> IS_GLISTERING = DataTracker.registerData(DodoEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final Ingredient LURING_INGREDIENT = Ingredient.ofItems(Items.GLISTERING_MELON_SLICE, Items.MELON_SLICE, Items.MELON, Items.MELON_SEEDS);
     private static final Ingredient BREEDING_INGREDIENT = Ingredient.ofItems(Items.MELON_SLICE);
     private final AnimationFactory factory = new AnimationFactory(this);
+    private boolean songPlaying;
+    @Nullable
+    private BlockPos songSource;
 
     public DodoEntity(EntityType<? extends AnimalEntity> entityType, World world) {
         super(entityType, world);
@@ -57,6 +59,7 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
     @Override
     protected void initGoals() {
         this.goalSelector.add(1, new AnimalMateGoal(this, 1.0D));
+        this.goalSelector.add(0, new TwerkGoal(this));
         this.goalSelector.add(2, new EscapeDangerGoal(this, 1.25));
         this.goalSelector.add(3, new TemptGoal(this, 1.25, LURING_INGREDIENT, false));
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1));
@@ -69,29 +72,42 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
                         .add(EntityAttributes.GENERIC_MAX_HEALTH, 8.0D)
                         .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D);
     }
+    @Override
+    public void setNearbySongPlaying(BlockPos songPosition, boolean playing) {
+        this.songSource = songPosition;
+        this.songPlaying = playing;
+    }
+
+    public boolean isTwerking() {
+        return this.songPlaying;
+    }
 
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
 
         if (itemStack.isOf(Items.GLISTERING_MELON_SLICE) && !this.isGlistering()) {
-            itemStack.decrement(1);
-            this.world.playSoundFromEntity(null, this, MbembeSoundEvents.ENTITY_DODO_TRANSFORMS, this.getSoundCategory(), 1.0F, 1.0F);
-            Vec3d vec3d = this.getBoundingBox().getCenter();
-            Random random = this.world.getRandom();
-            for (int i = 0; i < 10; ++i) {
-                double velX = random.nextGaussian() * 0.075D;
-                double velY = random.nextGaussian() * 0.075D;
-                double velZ = random.nextGaussian() * 0.075D;
-                this.world.addParticle(ParticleTypes.POOF, true, vec3d.x, vec3d.y, vec3d.z, velX, velY, velZ);
+            if(!world.isClient) {
+                itemStack.decrement(1);
+                this.world.playSoundFromEntity(null, this, MbembeSoundEvents.ENTITY_DODO_TRANSFORMS, this.getSoundCategory(), 1.0F, 1.0F);
+                Vec3d vec3d = this.getBoundingBox().getCenter();
+                Random random = this.world.getRandom();
+                for (int i = 0; i < 10; ++i) {
+                    double velX = random.nextGaussian() * 0.075D;
+                    double velY = random.nextGaussian() * 0.075D;
+                    double velZ = random.nextGaussian() * 0.075D;
+                    this.world.addParticle(ParticleTypes.POOF, true, vec3d.x, vec3d.y, vec3d.z, velX, velY, velZ);
+                }
+                this.setGlistering(true);
             }
-            this.setGlistering(true);
             return ActionResult.success(this.world.isClient);
         }
 
         if (itemStack.isOf(Items.WATER_BUCKET) && this.isGlistering()) {
-            this.world.playSoundFromEntity(null, this, SoundEvents.ITEM_BUCKET_EMPTY, this.getSoundCategory(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
-            this.setGlistering(false);
+            if(!world.isClient) {
+                this.world.playSoundFromEntity(null, this, SoundEvents.ITEM_BUCKET_EMPTY, this.getSoundCategory(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
+                this.setGlistering(false);
+            }
             return ActionResult.success(this.world.isClient);
         }
 
@@ -118,6 +134,7 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
     public boolean isGlistering() {
         return this.dataTracker.get(IS_GLISTERING);
     }
+
     public void setGlistering(boolean glistering) {
         this.dataTracker.set(IS_GLISTERING, glistering);
     }
@@ -173,6 +190,11 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
         animationData.addAnimationController(new AnimationController<>(this, "controller", 20, this::predicate));
     }
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        if(this.isTwerking()){
+            event.getController().setAnimation(new AnimationBuilder()
+                    .addAnimation("animation.dodo.eltwerka", true));
+            return PlayState.CONTINUE;
+        }
         if((this.isInsideWaterOrBubbleColumn() || this.touchingWater) || !this.isOnGround()) {
             event.getController().setAnimation(new AnimationBuilder()
                 .addAnimation("animation.dodo.fall", true));
@@ -196,5 +218,8 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
     @Override
     public int tickTimer() {
         return age;
+    }
+    public static boolean canSpawn(EntityType<? extends DodoEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
+        return random.nextDouble() > 0.78;
     }
 }

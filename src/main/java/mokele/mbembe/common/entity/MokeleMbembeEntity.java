@@ -1,21 +1,11 @@
 package mokele.mbembe.common.entity;
 
+import mokele.mbembe.common.entity.goal.TwerkGoal;
 import mokele.mbembe.common.init.MbembeSoundEvents;
 import mokele.mbembe.common.init.MbembeStatusEffects;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.MoveIntoWaterGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.UniversalAngerGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -35,12 +25,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -58,13 +46,16 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import java.util.Random;
 import java.util.UUID;
 
-public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAnimatable, IAnimationTickable {
+public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAnimatable, IAnimationTickable, Twerker {
     private static final TrackedData<Boolean> ANGRY = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<Boolean> PROVOKED = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private int angerTime;
     private final AnimationFactory factory = new AnimationFactory(this);
     @Nullable
     private UUID targetUuid;
+    private boolean songPlaying;
+    @Nullable
+    private BlockPos songSource;
     private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 69);
 
     public MokeleMbembeEntity(EntityType<? extends HostileEntity> entityType, World world) {
@@ -76,9 +67,10 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(0, new TwerkGoal(this));
         this.goalSelector.add(0, new MoveIntoWaterGoal(this));
         this.goalSelector.add(2, new MeleeAttackGoal(this, 1.0, false));
-        this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0, 0.0F));
+        this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0, 0));
         this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(8, new LookAroundGoal(this));
         this.targetSelector.add(2, new RevengeGoal(this));
@@ -120,6 +112,28 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         super.initDataTracker();
         this.dataTracker.startTracking(ANGRY, false);
         this.dataTracker.startTracking(PROVOKED, false);
+    }
+
+    @Override
+    public void setNearbySongPlaying(BlockPos songPosition, boolean playing) {
+        this.songSource = songPosition;
+        this.songPlaying = playing;
+    }
+
+    public boolean isTwerking() {
+        return this.songPlaying;
+    }
+
+
+    @Override
+    public void tickMovement() {
+        if (this.songSource == null
+                || !this.songSource.isWithinDistance(this.getPos(), 3.46)
+                || !this.world.getBlockState(this.songSource).isOf(Blocks.JUKEBOX)) {
+            this.songPlaying = false;
+            this.songSource = null;
+        }
+        super.tickMovement();
     }
 
     @Override
@@ -235,9 +249,14 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         animationData.addAnimationController(new AnimationController<>(this, "controller", 20, this::predicate));
     }
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        if(this.isTwerking()){
+            event.getController().setAnimation(new AnimationBuilder()
+                    .addAnimation("animation.mokele.latwerka", true));
+            return PlayState.CONTINUE;
+        }
         if(!isAlive()){
             event.getController().setAnimation(new AnimationBuilder()
-                    .addAnimation("animation.mokele.death", true));
+                    .addAnimation("animation.mokele.death", false));
             return PlayState.CONTINUE;
         }
         if((this.isInsideWaterOrBubbleColumn() || this.touchingWater) && (this.getVelocity().x * this.getVelocity().x + this.getVelocity().z * this.getVelocity().z) > 0f) {
@@ -266,6 +285,6 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     }
 
     public static boolean canSpawn(EntityType<? extends MokeleMbembeEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-        return random.nextDouble() > 0.97 && (world.getFluidState(pos).isIn(FluidTags.WATER) || world.getFluidState(pos.offset(Direction.DOWN)).isIn(FluidTags.WATER) || world.getFluidState(pos.offset(Direction.UP)).isIn(FluidTags.WATER));
+        return random.nextDouble() > 0.98;
     }
 }

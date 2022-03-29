@@ -212,7 +212,7 @@
 				}
 			}
 		},
-		"animation.dodo.el twerka": {
+		"animation.dodo.eltwerka": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
