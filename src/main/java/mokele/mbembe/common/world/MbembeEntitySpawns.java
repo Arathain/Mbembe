@@ -12,10 +12,11 @@ import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.tag.BiomeTags;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 
 public class MbembeEntitySpawns {
     public static void init() {
-        BiomeModifications.addSpawn(BiomeSelectors.tag(BiomeTags.IS_BEACH), SpawnGroup.WATER_AMBIENT, MbembeEntities.DODO, Mbembe.CONFIG.dodoWeight, Mbembe.CONFIG.dodoMin, Mbembe.CONFIG.dodoMax);
+        BiomeModifications.addSpawn(BiomeSelectors.tag(BiomeTags.IS_BEACH).or(BiomeSelectors.includeByKey(BiomeKeys.STONY_SHORE)), SpawnGroup.CREATURE, MbembeEntities.DODO, Mbembe.CONFIG.dodoWeight, Mbembe.CONFIG.dodoMin, Mbembe.CONFIG.dodoMax);
         BiomeModifications.addSpawn(BiomeSelectors.categories(Biome.Category.RIVER), SpawnGroup.WATER_AMBIENT, MbembeEntities.MOKELE_MBEMBE, Mbembe.CONFIG.mbembeWeight, Mbembe.CONFIG.mbembeMin, Mbembe.CONFIG.mbembeMax);
         initSpawnRestrictions();
     }

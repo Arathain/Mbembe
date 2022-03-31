@@ -220,6 +220,6 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
         return age;
     }
     public static boolean canSpawn(EntityType<? extends DodoEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-        return random.nextDouble() > 0.78;
+        return random.nextDouble() > 0.78 && isLightLevelValidForNaturalSpawn(world, pos);
     }
 }
