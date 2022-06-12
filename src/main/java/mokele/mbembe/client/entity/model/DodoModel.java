@@ -11,17 +11,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class DodoModel extends AnimatedTickingGeoModel<DodoEntity> {
     @Override
-    public Identifier getModelLocation(DodoEntity object) {
+    public Identifier getModelResource(DodoEntity object) {
         return new Identifier(Mbembe.MOD_ID, "geo/entity/dodo.geo.json");
     }
 
     @Override
-    public Identifier getTextureLocation(DodoEntity object) {
+    public Identifier getTextureResource(DodoEntity object) {
         return object.isGlistering() ? new Identifier(Mbembe.MOD_ID, "textures/entity/dodo/glistering_dodo.png") : new Identifier(Mbembe.MOD_ID, "textures/entity/dodo/dodo.png");
     }
 
     @Override
-    public Identifier getAnimationFileLocation(DodoEntity animatable) {
+    public Identifier getAnimationResource(DodoEntity animatable) {
         return new Identifier(Mbembe.MOD_ID, "animations/entity/dodo.animation.json");
     }
 

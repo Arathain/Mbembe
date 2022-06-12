@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "mokele.mbembe",
+    "id": "mbembe",
+    "version": "${version}",
+    "provides": [],
+    "metadata": {
+      "name": "Mbembe",
+      "description": "Mokele Mbembe",
+      "contributors": {
+        "Arathain": "Main Coder",
+        "Mango": "SFX",
+        "Zae": "Artist",
+        "Coolrex": "Animator",
+        "Ninni": "Coder",
+        "Mokele Mbembe": "Mokele Mbembe"
+      },
+      "contact": {
+        "homepage": "https://modrinth.com/mod/mbembe",
+        "sources": "https://github.com/Arathain/Mbembe"
+      },
+      "icon": "assets/mbembe/icon.png",
+      "license": {
+        "name": "All Rights Reserved",
+        "id": "ARR",
+        "url": "https://en.wikipedia.org/wiki/All_rights_reserved",
+        "description": "All Rights Reserved."
+      }
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": "mokele.mbembe.Mbembe",
+      "client_init": "mokele.mbembe.MbembeClient"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.17.x"
+      },
+      {
+        "id": "quilted_fabric_api",
+        "versions": ">=2.0.0-"
+      },
+      {
+        "id": "geckolib3",
+        "versions": ">=3.1.0-"
+      },
+      {
+        "id": "minecraft",
+        "versions": "1.19.x"
+      },
+      {
+        "id": "java",
+        "versions": ">=17"
+      }
+    ]
+  },
+  "mixin": [
+    "mbembe.mixins.json"
+  ]
+}

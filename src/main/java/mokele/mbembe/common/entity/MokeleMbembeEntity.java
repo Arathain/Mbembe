@@ -16,9 +16,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.DrownedEntity;
-import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -31,9 +29,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.biome.OverworldBiomeCreator;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -49,8 +48,7 @@ import java.util.Random;
 import java.util.UUID;
 
 public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAnimatable, IAnimationTickable, Twerker {
-    private static final TrackedData<Boolean> ANGRY = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final TrackedData<Boolean> PROVOKED = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> ANGRY = DataTracker.registerData(MokeleMbembeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private int angerTime;
     private final AnimationFactory factory = new AnimationFactory(this);
     @Nullable
@@ -76,8 +74,8 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(8, new LookAroundGoal(this));
         this.targetSelector.add(2, new RevengeGoal(this));
-        this.targetSelector.add(3, new ActiveTargetGoal(this, DrownedEntity.class, true, false));
-        this.targetSelector.add(4, new UniversalAngerGoal(this, false));
+        this.targetSelector.add(3, new TargetGoal<>(this, DrownedEntity.class, true, false));
+        this.targetSelector.add(4, new UniversalAngerGoal<>(this, false));
     }
 
     @Override
@@ -94,7 +92,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
             if(!player.getAbilities().creativeMode) {
                 stack.decrement(1);
             }
-            this.emitGameEvent(GameEvent.MOB_INTERACT, this.getCameraBlockPos());
+            this.emitGameEvent(GameEvent.ENTITY_INTERACT, this);
             return ActionResult.SUCCESS;
         }
         return super.interactMob(player, hand);
@@ -113,7 +111,6 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(ANGRY, false);
-        this.dataTracker.startTracking(PROVOKED, false);
     }
 
     @Override
@@ -130,7 +127,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     @Override
     public void tickMovement() {
         if (this.songSource == null
-                || !this.songSource.isWithinDistance(this.getPos(), 3.46)
+                || !this.songSource.isWithinDistance(this.getBlockPos(), 3.46)
                 || !this.world.getBlockState(this.songSource).isOf(Blocks.JUKEBOX)) {
             this.songPlaying = false;
             this.songSource = null;
@@ -148,7 +145,6 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         super.setTarget(target);
         if (target == null) {
             this.dataTracker.set(ANGRY, false);
-            this.dataTracker.set(PROVOKED, false);
         } else {
             this.dataTracker.set(ANGRY, true);
         }
@@ -173,13 +169,6 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         return this.dataTracker.get(ANGRY);
     }
 
-    public boolean isProvoked() {
-        return this.dataTracker.get(PROVOKED);
-    }
-
-    public void setProvoked() {
-        this.dataTracker.set(PROVOKED, true);
-    }
     @Override
     public boolean cannotDespawn() {
         return true;
@@ -286,7 +275,7 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         return age;
     }
 
-    public static boolean canSpawn(EntityType<? extends MokeleMbembeEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-        return random.nextDouble() > 0.98;
+    public static boolean canSpawn(EntityType<? extends MokeleMbembeEntity> type, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos blockPos, RandomGenerator randomGenerator) {
+        return randomGenerator.nextDouble() > 0.98;
     }
 }

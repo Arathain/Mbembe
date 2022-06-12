@@ -11,17 +11,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class MokeleMbembeModel extends AnimatedTickingGeoModel<MokeleMbembeEntity> {
     @Override
-    public Identifier getModelLocation(MokeleMbembeEntity object) {
+    public Identifier getModelResource(MokeleMbembeEntity object) {
         return new Identifier(Mbembe.MOD_ID, "geo/entity/mokele.geo.json");
     }
 
     @Override
-    public Identifier getTextureLocation(MokeleMbembeEntity object) {
+    public Identifier getTextureResource(MokeleMbembeEntity object) {
         return  new Identifier(Mbembe.MOD_ID, "textures/entity/mokele.png");
     }
 
     @Override
-    public Identifier getAnimationFileLocation(MokeleMbembeEntity animatable) {
+    public Identifier getAnimationResource(MokeleMbembeEntity animatable) {
         return new Identifier(Mbembe.MOD_ID, "animations/entity/mokele.animation.json");
     }
 

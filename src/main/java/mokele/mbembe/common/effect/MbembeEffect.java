@@ -1,10 +1,11 @@
 package mokele.mbembe.common.effect;
 
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
+
+import net.minecraft.entity.effect.StatusEffectType;
 
 public class MbembeEffect extends StatusEffect {
-    public MbembeEffect(StatusEffectCategory category, int color) {
-        super(category, color);
+    public MbembeEffect(StatusEffectType type, int color) {
+        super(type, color);
     }
 }

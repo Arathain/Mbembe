@@ -28,6 +28,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
@@ -48,8 +50,6 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
     private static final Ingredient BREEDING_INGREDIENT = Ingredient.ofItems(Items.MELON_SLICE);
     private final AnimationFactory factory = new AnimationFactory(this);
     private boolean songPlaying;
-    @Nullable
-    private BlockPos songSource;
 
     public DodoEntity(EntityType<? extends AnimalEntity> entityType, World world) {
         super(entityType, world);
@@ -74,7 +74,6 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
     }
     @Override
     public void setNearbySongPlaying(BlockPos songPosition, boolean playing) {
-        this.songSource = songPosition;
         this.songPlaying = playing;
     }
 
@@ -91,7 +90,7 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
                 itemStack.decrement(1);
                 this.world.playSoundFromEntity(null, this, MbembeSoundEvents.ENTITY_DODO_TRANSFORMS, this.getSoundCategory(), 1.0F, 1.0F);
                 Vec3d vec3d = this.getBoundingBox().getCenter();
-                Random random = this.world.getRandom();
+                RandomGenerator random = this.world.getRandom();
                 for (int i = 0; i < 10; ++i) {
                     double velX = random.nextGaussian() * 0.075D;
                     double velY = random.nextGaussian() * 0.075D;
@@ -219,7 +218,7 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
     public int tickTimer() {
         return age;
     }
-    public static boolean canSpawn(EntityType<? extends DodoEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-        return random.nextDouble() > 0.78 && isLightLevelValidForNaturalSpawn(world, pos);
+    public static boolean canSpawn(EntityType<? extends DodoEntity> type, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos blockPos, RandomGenerator randomGenerator) {
+        return randomGenerator.nextDouble() > 0.78 && isBrightEnoughForNaturalSpawn(serverWorldAccess, blockPos);
     }
 }
