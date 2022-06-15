@@ -7,6 +7,8 @@ import mokele.mbembe.common.init.MbembeItems;
 import mokele.mbembe.common.init.MbembeSoundEvents;
 import mokele.mbembe.common.init.MbembeStatusEffects;
 import mokele.mbembe.common.world.MbembeEntitySpawns;
+import net.minecraft.tag.TagKey;
+import net.minecraft.world.biome.Biome;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 

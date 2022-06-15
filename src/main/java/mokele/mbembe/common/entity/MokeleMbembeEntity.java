@@ -1,11 +1,14 @@
 package mokele.mbembe.common.entity;
 
+import mokele.mbembe.Mbembe;
 import mokele.mbembe.common.entity.goal.TwerkGoal;
+import mokele.mbembe.common.entity.goal.TwerkerNavigation;
 import mokele.mbembe.common.init.MbembeSoundEvents;
 import mokele.mbembe.common.init.MbembeStatusEffects;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -17,6 +20,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -24,6 +28,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.tag.BiomeTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TimeHelper;
@@ -62,6 +67,11 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
         super(entityType, world);
         this.stepHeight = 2.0F;
         this.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
+    }
+
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        return new TwerkerNavigation<>(this, world);
     }
 
     @Override
@@ -276,6 +286,6 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     }
 
     public static boolean canSpawn(EntityType<? extends MokeleMbembeEntity> type, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos blockPos, RandomGenerator randomGenerator) {
-        return randomGenerator.nextDouble() > 0.98;
+        return randomGenerator.nextDouble() > (serverWorldAccess.getBiome(blockPos).hasTag(BiomeTags.IS_RIVER) ? 0.99 : Mbembe.CONFIG.mbembeSpawnChance);
     }
 }
