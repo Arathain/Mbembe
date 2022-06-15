@@ -23,6 +23,11 @@ public class MbembeConfig implements Config {
     public int mbembeMax = 1;
     @Syncing
     @Comment("""
+            Percentage chance that a mokele won't spawn. Default is 0.95.
+            """)
+    public float mbembeSpawnChance = 0.95f;
+    @Syncing
+    @Comment("""
             Dodo spawning weight. Default is 1.
             """)
     public int dodoWeight = 1;

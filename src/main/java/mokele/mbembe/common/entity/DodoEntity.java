@@ -1,11 +1,13 @@
 package mokele.mbembe.common.entity;
 
 import mokele.mbembe.common.entity.goal.TwerkGoal;
+import mokele.mbembe.common.entity.goal.TwerkerNavigation;
 import mokele.mbembe.common.init.MbembeEntities;
 import mokele.mbembe.common.init.MbembeSoundEvents;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -182,6 +184,10 @@ public class DodoEntity extends AnimalEntity implements IAnimatable, IAnimationT
     @Override
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
         return MbembeEntities.DODO.create(world);
+    }
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        return new TwerkerNavigation<>(this, world);
     }
 
     @Override
