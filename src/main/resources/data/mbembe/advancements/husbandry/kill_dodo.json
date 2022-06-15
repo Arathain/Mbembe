@@ -19,7 +19,7 @@
   "display": {
     "announce_to_chat": true,
     "description": {
-      "translate": "advancements.adventure.kill_dodo.title"
+      "translate": "advancements.adventure.kill_dodo.description"
     },
     "frame": "task",
     "hidden": false,
@@ -28,7 +28,7 @@
     },
     "show_toast": true,
     "title": {
-      "translate": "advancements.adventure.kill_dodo.description"
+      "translate": "advancements.adventure.kill_dodo.title"
     }
   },
   "requirements": [
