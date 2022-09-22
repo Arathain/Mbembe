@@ -286,6 +286,6 @@ public class MokeleMbembeEntity extends HostileEntity implements Angerable, IAni
     }
 
     public static boolean canSpawn(EntityType<? extends MokeleMbembeEntity> type, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos blockPos, RandomGenerator randomGenerator) {
-        return randomGenerator.nextDouble() > (serverWorldAccess.getBiome(blockPos).hasTag(BiomeTags.IS_RIVER) ? 0.99 : Mbembe.CONFIG.mbembeSpawnChance);
+        return randomGenerator.nextDouble() > (serverWorldAccess.getBiome(blockPos).isIn(BiomeTags.IS_RIVER) ? 0.99 : Mbembe.CONFIG.mbembeSpawnChance);
     }
 }

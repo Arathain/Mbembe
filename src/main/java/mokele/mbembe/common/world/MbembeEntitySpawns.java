@@ -5,7 +5,6 @@ import mokele.mbembe.common.entity.DodoEntity;
 import mokele.mbembe.common.entity.MokeleMbembeEntity;
 import mokele.mbembe.common.init.MbembeEntities;
 import mokele.mbembe.common.init.MbembeTags;
-import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.tag.BiomeTags;
@@ -25,7 +24,7 @@ public class MbembeEntitySpawns {
         initSpawnRestrictions();
     }
     private static void initSpawnRestrictions() {
-        SpawnRestrictionAccessor.callRegister(MbembeEntities.MOKELE_MBEMBE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MokeleMbembeEntity::canSpawn);
-        SpawnRestrictionAccessor.callRegister(MbembeEntities.DODO, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DodoEntity::canSpawn);
+        SpawnRestriction.register(MbembeEntities.MOKELE_MBEMBE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MokeleMbembeEntity::canSpawn);
+        SpawnRestriction.register(MbembeEntities.DODO, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DodoEntity::canSpawn);
     }
 }

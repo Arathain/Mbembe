@@ -27,7 +27,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     private void atttamck(Entity target, CallbackInfo ci) {
         if(target.isAttackable() && !target.getWorld().isClient) {
             if (!target.handleAttack(this)) {
-                if(target.isInsideWaterOrBubbleColumn() && target.getWorld().getBiome(target.getBlockPos()).hasTag(BiomeTags.IS_RIVER) && this.hasStatusEffect(MbembeStatusEffects.MOKELES_BLESSING) && !(target instanceof MokeleMbembeEntity)) {
+                if(target.isInsideWaterOrBubbleColumn() && target.getWorld().getBiome(target.getBlockPos()).isIn(BiomeTags.IS_RIVER) && this.hasStatusEffect(MbembeStatusEffects.MOKELES_BLESSING) && !(target instanceof MokeleMbembeEntity)) {
                     target.setVelocity(0, Math.abs(target.getVelocity().y) + 1f, 0);
                     target.damage(DamageSource.mob(this), 20);
                     if(target.getWorld() instanceof ServerWorld serverWorld) {

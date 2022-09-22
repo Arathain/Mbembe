@@ -40,9 +40,9 @@ dependencies {
 	}
 	modImplementation "org.quiltmc:quilt-loader:${project.loader_version}"
 
-	modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
+	// modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
 	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fabric_api_version}-${minecraft_version}"
-	modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:${project.geckolib_version}"
+	modImplementation "software.bernie.geckolib:geckolib-quilt-1.19:${project.geckolib_version}"
 	include("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
 	modImplementation("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
 	include("com.github.Draylar.omega-config:omega-config-gui:${project.omega_config_version}")
